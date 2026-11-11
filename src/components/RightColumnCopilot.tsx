@@ -14,9 +14,14 @@ import {
   Zap,
   Bot,
   Loader2,
+  Award,
 } from "lucide-react";
 
-export function RightColumnCopilot() {
+export function RightColumnCopilot({
+  onOpenCertificate,
+}: {
+  onOpenCertificate: () => void;
+}) {
   const {
     guardrailIssues,
     issueFilter,
@@ -379,24 +384,43 @@ export function RightColumnCopilot() {
         })}
       </div>
 
-      {/* Bottom Sticky Action: Apply All Fixes for quick demo */}
-      <div className="p-3 border-t border-slate-200 bg-white shrink-0">
+      {/* Bottom Sticky Action: Pre-Audit Certificate Generator & Quick Fix */}
+      <div className="p-3 border-t border-slate-200 bg-white shrink-0 space-y-2">
+        {/* Primary CTA: Generate Official Pre-Audit Certificate & Export */}
         <button
-          onClick={applyAllFixes}
-          disabled={unresolvedCount === 0}
-          className="w-full flex items-center justify-center space-x-2 py-2 rounded-md bg-slate-900 hover:bg-slate-800 text-white font-sans font-medium text-xs transition disabled:opacity-40 shadow-xs"
+          onClick={onOpenCertificate}
+          className={`w-full flex items-center justify-center space-x-2 py-2.5 px-3 rounded-md font-sans font-bold text-xs transition shadow-sm ${
+            unresolvedCount === 0
+              ? "bg-slate-900 hover:bg-slate-800 text-white ring-2 ring-emerald-400/50"
+              : "bg-slate-900/90 hover:bg-slate-900 text-white"
+          }`}
         >
-          <Zap className="w-3.5 h-3.5 fill-current text-amber-300" />
+          <Award className={`w-4 h-4 ${unresolvedCount === 0 ? "text-emerald-400" : "text-amber-400"}`} />
           <span>
             {unresolvedCount === 0
               ? language === "en"
-                ? "✅ All 5 Traps Fixed (98% Audit-Ready)"
-                : "✅ 全部護欄已修復合規 (98% 審查無虞)"
+                ? "Generate Official Pre-Audit Certificate & Export"
+                : "產製官方預審勾稽證明書並匯出 (Cover Sheet 0)"
               : language === "en"
-              ? "1-Click Apply All Fixes (Jump to 98%)"
-              : "一鍵套用全部修復 (直衝 98% 審查通過)"}
+              ? "Generate Pre-Audit Certificate (Live Preview)"
+              : "檢視預審勾稽證明書 (Live Preview)"}
           </span>
         </button>
+
+        {/* Secondary Quick Fix Helper */}
+        {unresolvedCount > 0 && (
+          <button
+            onClick={applyAllFixes}
+            className="w-full flex items-center justify-center space-x-1.5 py-1.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-sans font-medium text-[11px] transition border border-slate-200"
+          >
+            <Zap className="w-3.5 h-3.5 text-amber-500 fill-current" />
+            <span>
+              {language === "en"
+                ? `1-Click Apply All Fixes (${unresolvedCount} remaining)`
+                : `一鍵套用全部修復 (尚餘 ${unresolvedCount} 項)`}
+            </span>
+          </button>
+        )}
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import { RightColumnCopilot } from "@/components/RightColumnCopilot";
 import { PdfCitationDrawer } from "@/components/PdfCitationDrawer";
 import { WalkthroughController } from "@/components/WalkthroughController";
 import { ExportAuditModal } from "@/components/ExportAuditModal";
+import { PreAuditCertificateModal } from "@/components/PreAuditCertificateModal";
 import { MobileActivePane } from "@/lib/types";
 import { useGrantStore } from "@/lib/store";
 import { FolderArchive, FileCode, ShieldAlert } from "lucide-react";
@@ -16,6 +17,7 @@ import { FolderArchive, FileCode, ShieldAlert } from "lucide-react";
 export default function Home() {
   const [isWalkthroughOpen, setIsWalkthroughOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isCertificateOpen, setIsCertificateOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<MobileActivePane>("editor");
   const { language, unresolvedCount } = useGrantStore();
 
@@ -98,12 +100,18 @@ export default function Home() {
             mobilePane === "copilot" ? "block" : "hidden lg:block"
           }`}
         >
-          <RightColumnCopilot />
+          <RightColumnCopilot onOpenCertificate={() => setIsCertificateOpen(true)} />
         </section>
       </div>
 
       {/* Slide-over Official PDF Citation Drawer */}
       <PdfCitationDrawer />
+
+      {/* Official Pre-Audit Verification Certificate Modal (Cover Page 0) */}
+      <PreAuditCertificateModal
+        isOpen={isCertificateOpen}
+        onClose={() => setIsCertificateOpen(false)}
+      />
 
       {/* Export Official Package & Certificate Modal */}
       <ExportAuditModal
