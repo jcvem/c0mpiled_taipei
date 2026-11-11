@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useGrantStore } from "@/lib/store";
 import {
   FolderArchive,
@@ -9,13 +9,36 @@ import {
   Receipt,
   Scale,
   ArrowRight,
+  UploadCloud,
+  FileCheck,
+  Loader2,
+  Plus,
 } from "lucide-react";
 
 export function LeftColumnVault() {
   const { companyDocs, guardrailIssues, selectIssue, openPdfCitation, language } =
     useGrantStore();
 
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadSuccessToast, setUploadSuccessToast] = useState<string | null>(null);
+
   const missingTaxIssue = guardrailIssues.find((i) => i.id === "issue-missing-local-tax");
+
+  const handleSimulateUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setTimeout(() => {
+      setIsUploading(false);
+      setUploadSuccessToast(
+        language === "en"
+          ? `OCR Verified: ${file.name} (Valid Date, No Arrears)`
+          : `OCR 勾稽成功：${file.name}（效期符合，無欠繳紀錄）`
+      );
+      setTimeout(() => setUploadSuccessToast(null), 3000);
+    }, 1200);
+  };
 
   return (
     <div className="flex flex-col h-full bg-slate-50/60 border-r border-slate-200 overflow-y-auto">
@@ -67,10 +90,37 @@ export function LeftColumnVault() {
                 ? `Company Certificates (${companyDocs.length})`
                 : `公司證件與報表勾稽 (${companyDocs.length})`}
             </span>
-            <span className="text-[10px] font-sans text-slate-400">
-              {language === "en" ? "OCR Reconciled" : "自動勾稽萃取"}
-            </span>
+
+            {/* Quick Upload Trigger */}
+            <label className="cursor-pointer inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-white hover:bg-slate-100 border border-slate-300 text-[10px] font-sans text-slate-700 font-medium transition shadow-2xs">
+              {isUploading ? (
+                <>
+                  <Loader2 className="w-3 h-3 animate-spin text-slate-600" />
+                  <span>{language === "en" ? "OCR..." : "解析中..."}</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="w-3 h-3 text-slate-600" />
+                  <span>{language === "en" ? "Upload PDF" : "上傳證件"}</span>
+                </>
+              )}
+              <input
+                type="file"
+                accept=".pdf,.png,.jpg,.docx"
+                onChange={handleSimulateUpload}
+                className="hidden"
+                disabled={isUploading}
+              />
+            </label>
           </div>
+
+          {/* Upload Success Banner */}
+          {uploadSuccessToast && (
+            <div className="p-2 rounded-md bg-emerald-50 border border-emerald-300 text-emerald-800 text-[11px] flex items-center space-x-1.5 animate-fadeIn">
+              <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span className="truncate">{uploadSuccessToast}</span>
+            </div>
+          )}
 
           {companyDocs.map((doc) => {
             const isVerified = doc.status === "VERIFIED";

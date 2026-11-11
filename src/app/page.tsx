@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Navbar } from "@/components/Navbar";
+import { LandingHero } from "@/components/LandingHero";
 import { UrlHarvesterBar } from "@/components/UrlHarvesterBar";
 import { LeftColumnVault } from "@/components/LeftColumnVault";
 import { CenterColumnEditor } from "@/components/CenterColumnEditor";
@@ -15,11 +16,32 @@ import { useGrantStore } from "@/lib/store";
 import { FolderArchive, FileCode, ShieldAlert } from "lucide-react";
 
 export default function Home() {
+  const [viewMode, setViewMode] = useState<"landing" | "ide">("landing");
   const [isWalkthroughOpen, setIsWalkthroughOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isCertificateOpen, setIsCertificateOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<MobileActivePane>("editor");
   const { language, unresolvedCount } = useGrantStore();
+
+  if (viewMode === "landing") {
+    return (
+      <>
+        <LandingHero
+          onLaunchIde={() => setViewMode("ide")}
+          onStartWalkthrough={() => {
+            setViewMode("ide");
+            setIsWalkthroughOpen(true);
+          }}
+        />
+
+        {/* 90-Second Demo Video Director / Teleprompter */}
+        <WalkthroughController
+          isOpen={isWalkthroughOpen}
+          onClose={() => setIsWalkthroughOpen(false)}
+        />
+      </>
+    );
+  }
 
   return (
     <main className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-rose-100 selection:text-rose-900">
@@ -27,6 +49,7 @@ export default function Home() {
       <Navbar
         onStartWalkthrough={() => setIsWalkthroughOpen(true)}
         onOpenExport={() => setIsExportOpen(true)}
+        onBackToLanding={() => setViewMode("landing")}
       />
 
       {/* 2. Stage 1: 1-URL Rule Harvester Bar */}

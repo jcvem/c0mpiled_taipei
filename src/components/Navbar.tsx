@@ -14,9 +14,11 @@ import {
 export function Navbar({
   onStartWalkthrough,
   onOpenExport,
+  onBackToLanding,
 }: {
   onStartWalkthrough: () => void;
   onOpenExport: () => void;
+  onBackToLanding?: () => void;
 }) {
   const {
     passProbability,
@@ -31,6 +33,17 @@ export function Navbar({
   return (
     <header className="h-14 border-b border-slate-200 bg-white/95 backdrop-blur sticky top-0 z-40 px-4 flex items-center justify-between shadow-xs">
       <div className="flex items-center space-x-3">
+        {onBackToLanding && (
+          <button
+            onClick={onBackToLanding}
+            className="flex items-center space-x-1 text-xs font-sans font-medium text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded transition mr-1"
+            title="Return to Landing Overview"
+          >
+            <span>←</span>
+            <span className="hidden sm:inline">Overview</span>
+          </button>
+        )}
+
         <div className="flex items-center space-x-2.5">
           <div className="w-8 h-8 rounded-md bg-slate-900 flex items-center justify-center font-mono font-bold text-white text-xs shadow-xs">
             G0
