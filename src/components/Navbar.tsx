@@ -2,101 +2,150 @@
 
 import React from "react";
 import { useGrantStore } from "@/lib/store";
+import { AppLanguage } from "@/lib/types";
 import {
   ShieldAlert,
   ShieldCheck,
   RotateCcw,
   Sparkles,
-  ExternalLink,
-  Cpu,
+  Globe2,
 } from "lucide-react";
 
 export function Navbar({ onStartWalkthrough }: { onStartWalkthrough: () => void }) {
   const {
     passProbability,
-    unresolvedCount,
-    fatalTrapsCount,
     resetAll,
     selectedPortalKey,
+    language,
+    setLanguage,
   } = useGrantStore();
 
   const isAuditReady = passProbability >= 95;
 
   return (
-    <header className="h-14 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur sticky top-0 z-40 px-4 flex items-center justify-between">
+    <header className="h-14 border-b border-slate-200 bg-white/95 backdrop-blur sticky top-0 z-40 px-4 flex items-center justify-between shadow-xs">
       <div className="flex items-center space-x-3">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded bg-zinc-900 border border-zinc-700 flex items-center justify-center font-mono font-bold text-rose-500 text-sm shadow-inner">
+        <div className="flex items-center space-x-2.5">
+          <div className="w-8 h-8 rounded-md bg-slate-900 flex items-center justify-center font-mono font-bold text-white text-xs shadow-xs">
             G0
           </div>
           <div className="flex flex-col">
             <div className="flex items-center space-x-2">
-              <span className="font-bold text-sm tracking-tight text-zinc-100 font-mono">
+              <span className="font-bold text-sm tracking-tight text-slate-900 font-sans">
                 GrantOS
               </span>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+              <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
                 ESLint for Grants
               </span>
             </div>
-            <span className="text-[10px] text-zinc-500 font-mono">
+            <span className="text-[10px] text-slate-500 font-sans">
               c0mpiled-18 // YC Startup School Hackathon
             </span>
           </div>
         </div>
 
-        <div className="h-4 w-[1px] bg-zinc-800 mx-2 hidden sm:block" />
+        <div className="h-4 w-[1px] bg-slate-200 mx-2 hidden sm:block" />
 
-        <div className="hidden md:flex items-center space-x-2 text-xs font-mono">
-          <span className="text-zinc-500">Target Rulebook:</span>
-          <span className="text-zinc-300 bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
+        <div className="hidden lg:flex items-center space-x-2 text-xs font-sans">
+          <span className="text-slate-400">
+            {language === "en" ? "Target Rulebook:" : "目標比對法規："}
+          </span>
+          <span className="text-slate-700 font-medium bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-[11px]">
             {selectedPortalKey === "siti"
-              ? "臺北市 SITI 115年第2梯次"
+              ? language === "en"
+                ? "Taipei SITI 2026 Batch 2"
+                : "臺北市 SITI 115年第2梯次"
+              : language === "en"
+              ? "Taiwan MOEA SBIR 2026"
               : "經濟部 115年度 SBIR"}
           </span>
         </div>
       </div>
 
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-2.5">
+        {/* Language Switcher */}
+        <div className="flex items-center bg-slate-100 p-0.5 rounded-md border border-slate-200 text-[11px] font-sans">
+          <button
+            onClick={() => setLanguage("bilingual")}
+            className={`px-2 py-0.5 rounded transition font-medium ${
+              language === "bilingual"
+                ? "bg-white text-slate-900 shadow-xs font-semibold"
+                : "text-slate-500 hover:text-slate-800"
+            }`}
+            title="雙語對照模式 / Bilingual Mode"
+          >
+            雙語 / EN
+          </button>
+          <button
+            onClick={() => setLanguage("zh")}
+            className={`px-2 py-0.5 rounded transition font-medium ${
+              language === "zh"
+                ? "bg-white text-slate-900 shadow-xs font-semibold"
+                : "text-slate-500 hover:text-slate-800"
+            }`}
+          >
+            繁中
+          </button>
+          <button
+            onClick={() => setLanguage("en")}
+            className={`px-2 py-0.5 rounded transition font-medium ${
+              language === "en"
+                ? "bg-white text-slate-900 shadow-xs font-semibold"
+                : "text-slate-500 hover:text-slate-800"
+            }`}
+          >
+            English
+          </button>
+        </div>
+
         {/* Pass Probability Pill */}
         <div
-          className={`flex items-center space-x-2 px-3 py-1 rounded-full border text-xs font-mono font-semibold transition-all duration-300 ${
+          className={`flex items-center space-x-1.5 px-3 py-1 rounded-full border text-xs font-mono font-semibold transition-all duration-300 ${
             isAuditReady
-              ? "bg-emerald-950/60 border-emerald-500/50 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)]"
-              : "bg-rose-950/60 border-rose-500/50 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.15)]"
+              ? "bg-emerald-50 border-emerald-300 text-emerald-800 shadow-xs"
+              : "bg-rose-50 border-rose-300 text-rose-800 shadow-xs"
           }`}
         >
           {isAuditReady ? (
-            <ShieldCheck className="w-4 h-4 text-emerald-400 animate-pulse" />
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
           ) : (
-            <ShieldAlert className="w-4 h-4 text-rose-400 animate-pulse" />
+            <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
           )}
-          <span>Pre-Review Pass:</span>
-          <span className="text-sm font-bold">{passProbability}%</span>
-          <span className="text-[10px] px-1 py-0.2 rounded bg-black/40">
-            {isAuditReady ? "AUDIT-READY" : "AUTO-REJECT"}
+          <span className="hidden sm:inline">
+            {language === "en" ? "Pass Rate:" : "初審通過率:"}
+          </span>
+          <span className="font-bold text-sm">{passProbability}%</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded bg-white/80 border border-slate-200">
+            {isAuditReady
+              ? language === "en"
+                ? "AUDIT-READY"
+                : "通過初審"
+              : language === "en"
+              ? "AUTO-REJECT"
+              : "初審退件"}
           </span>
         </div>
 
         {/* Demo Walkthrough Trigger */}
         <button
           onClick={onStartWalkthrough}
-          className="flex items-center space-x-1.5 px-2.5 py-1 text-xs font-mono rounded bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/40 hover:from-amber-500/30 hover:to-orange-500/30 transition-all shadow-sm"
+          className="flex items-center space-x-1.5 px-2.5 py-1 text-xs font-sans rounded-md bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-xs transition"
           title="Play 90-second Demo Sequence"
         >
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span className="font-semibold">90s Demo Autoplay</span>
+          <Sparkles className="w-3 h-3 text-amber-300" />
+          <span className="hidden md:inline">90s Demo Autoplay</span>
+          <span className="md:hidden">Demo</span>
         </button>
 
         {/* Reset State Button */}
         <button
           onClick={resetAll}
-          className="p-1.5 rounded text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition"
+          className="p-1.5 rounded-md text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-transparent hover:border-slate-200 transition"
           title="Reset to initial un-fixed state"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw className="w-3.5 h-3.5" />
         </button>
       </div>
     </header>
   );
 }
-

@@ -13,7 +13,7 @@ export default function Home() {
   const [isWalkthroughOpen, setIsWalkthroughOpen] = useState(false);
 
   return (
-    <main className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100 selection:bg-rose-500/20">
+    <main className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-rose-100 selection:text-rose-900">
       {/* 1. Header Navbar */}
       <Navbar onStartWalkthrough={() => setIsWalkthroughOpen(true)} />
 
@@ -21,7 +21,7 @@ export default function Home() {
       <UrlHarvesterBar />
 
       {/* 3. Stage 2: 3-Column Guardrail IDE */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-8.5rem)]">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-8.5rem)] bg-slate-50">
         {/* Left Column: Document & Evidence Vault (3 cols) */}
         <section className="lg:col-span-3 h-[600px] lg:h-auto border-b lg:border-b-0">
           <LeftColumnVault />
@@ -49,4 +49,3 @@ export default function Home() {
     </main>
   );
 }
-

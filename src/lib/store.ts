@@ -5,6 +5,7 @@ import {
   GuardrailIssue,
   BudgetItem,
   ProposalParagraph,
+  AppLanguage,
 } from "./types";
 import {
   PORTAL_CONFIGS,
@@ -15,12 +16,16 @@ import {
 } from "./grant-data";
 
 interface GrantStore {
+  // Language & Theme state
+  language: AppLanguage;
+  setLanguage: (lang: AppLanguage) => void;
+
   // Portal Harvester state
   portalUrl: string;
   selectedPortalKey: string;
   isHarvesting: boolean;
   harvestProgress: number;
-  harvestLogs: string[];
+  harvestLogs: { zh: string; en: string }[];
   hasHarvested: boolean;
   crawledDocs: CrawledDoc[];
 
@@ -65,12 +70,15 @@ function calculateScore(issues: GuardrailIssue[]): number {
 }
 
 export const useGrantStore = create<GrantStore>((set, get) => ({
+  language: "bilingual", // Default to bilingual so both TW and EN users thrive
+  setLanguage: (lang) => set({ language: lang }),
+
   portalUrl: PORTAL_CONFIGS.siti.portalUrl,
   selectedPortalKey: "siti",
   isHarvesting: false,
   harvestProgress: 0,
   harvestLogs: [],
-  hasHarvested: true, // Default true so user can inspect immediately, can re-harvest anytime
+  hasHarvested: true,
   crawledDocs: PORTAL_CONFIGS.siti.crawledDocs,
 
   companyDocs: INITIAL_COMPANY_DOCS,
@@ -106,22 +114,50 @@ export const useGrantStore = create<GrantStore>((set, get) => ({
     set({
       isHarvesting: true,
       harvestProgress: 5,
-      harvestLogs: ["🚀 正在連線至政府補助入口網..."],
+      harvestLogs: [
+        {
+          zh: "🚀 正在連線至政府補助入口網...",
+          en: "Connecting to official government grant portal...",
+        },
+      ],
     });
 
     const steps = [
-      { progress: 25, log: "🕷️ 遞迴偵測並下載官方附件（PDF / DOCX / ODT）5 件..." },
-      { progress: 50, log: "⚙️ 解析《115年附件C_會計科目及編列原則》法定硬限制..." },
-      { progress: 75, log: "🧠 編譯《審查重點說明》委員潛規則語彙與自爆查核點 AST..." },
-      { progress: 95, log: "📎 完成雙向錨定：全數規則已超連結至官方 PDF 頁碼..." },
-      { progress: 100, log: "✨ 規則編譯完成！已即時掛載至 GrantOS 護欄防護網。" },
+      {
+        progress: 25,
+        zh: "🕷️ 遞迴偵測並下載官方附件（PDF / DOCX / ODT）5 件...",
+        en: "Recursively discovering and downloading 5 official PDF / DOCX packages...",
+      },
+      {
+        progress: 50,
+        zh: "⚙️ 解析《115年附件C_會計科目及編列原則》法定硬限制...",
+        en: "Extracting deterministic statutory caps from Appendix C (Accounting Guidelines)...",
+      },
+      {
+        progress: 75,
+        zh: "🧠 編譯《審查重點說明》委員潛規則語彙與自爆查核點 AST...",
+        en: "Compiling unwritten reviewer rubrics and milestone clawback rules into AST...",
+      },
+      {
+        progress: 95,
+        zh: "📎 完成雙向錨定：全數規則已超連結至官方 PDF 頁碼...",
+        en: "Bi-directional anchoring complete: All linter rules hyperlinked to page citations...",
+      },
+      {
+        progress: 100,
+        zh: "✨ 規則編譯完成！已即時掛載至 GrantOS 護欄防護網。",
+        en: "Rule compilation complete. Live guardrail engine active.",
+      },
     ];
 
     for (const step of steps) {
       await new Promise((res) => setTimeout(res, 450));
       set((state) => ({
         harvestProgress: step.progress,
-        harvestLogs: [...state.harvestLogs, step.log],
+        harvestLogs: [
+          ...state.harvestLogs,
+          { zh: step.zh, en: step.en },
+        ],
       }));
     }
 
@@ -147,7 +183,6 @@ export const useGrantStore = create<GrantStore>((set, get) => ({
       return issue;
     });
 
-    // Update affected proposal text, budget items, or company vault docs based on which issue was fixed
     let updatedParagraphs = [...state.proposalParagraphs];
     let updatedBudget = [...state.budgetItems];
     let updatedCompanyDocs = [...state.companyDocs];
@@ -159,6 +194,8 @@ export const useGrantStore = create<GrantStore>((set, get) => ({
             ...p,
             content:
               "本計畫專注於研發企業級合規編譯器。「本計畫研發自主之『繁體中文企業法規專屬資料清洗管線』與『多模型邊緣排程路由機制』，並針對 1,200 組對抗性樣本建立專屬評測基準（Benchmark），克服商用模型幻覺與隱私風險。」核心技術自主可控。",
+            contentEn:
+              "This project develops an enterprise compliance compiler. \"This project develops a proprietary Traditional Chinese regulatory data cleaning pipeline, a multi-model edge routing scheduler, and an in-house evaluation benchmark with 1,200 adversarial test cases.\" Core IP remains fully in-house.",
             hasIssue: false,
           };
         }
@@ -173,6 +210,8 @@ export const useGrantStore = create<GrantStore>((set, get) => ({
             ...p,
             content:
               "期中查核點 M1：完成官網須知爬蟲與 PDF 規則 AST 解析器建置。\n期末查核點 M3：「完成系統部署並執行內部標準化測試集（N=500 筆對抗性查詢），驗證辨識準確率 F1-score >= 88.5%，產出經架構師簽署之工程測試報告與驗收日誌」作為驗收標準。",
+            contentEn:
+              "Midterm Milestone M1: Complete portal crawler and PDF rulebook AST parser.\nFinal Milestone M3: \"Complete deployment and benchmark on standardized adversarial test set (N=500 queries), achieving F1-score >= 88.5% verified by signed engineering report.\"",
             hasIssue: false,
           };
         }
@@ -186,15 +225,17 @@ export const useGrantStore = create<GrantStore>((set, get) => ({
           return {
             ...b,
             name: "全職資深研發工程師 (2人，依法僅列本薪，排除雇主法定負擔)",
+            nameEn: "Full-Time Senior R&D Engineers (2, Base Salary Only, Excl. Employer Insurance)",
             amount: 1050000,
             hasViolation: false,
             violationMessage: undefined,
+            violationMessageEn: undefined,
           };
         }
         if (b.category === "消耗性器材") {
           return {
             ...b,
-            amount: 488000, // Rebalanced difference
+            amount: 488000,
           };
         }
         return b;
@@ -211,6 +252,7 @@ export const useGrantStore = create<GrantStore>((set, get) => ({
             issueDate: "2026-11-02",
             metadata: { isTaxClear: true, validityDays: 9 },
             notes: "【已補齊】臺北市稅捐稽徵處無違章欠稅核發證明，效期有效，雙稅查核全部合規！",
+            notesEn: "【ATTACHED】Taipei Municipal Revenue Tax Clearance verified. Valid. Dual-tax compliance 100%.",
           };
         }
         return doc;
@@ -266,4 +308,3 @@ export const useGrantStore = create<GrantStore>((set, get) => ({
     });
   },
 }));
-

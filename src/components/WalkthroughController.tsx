@@ -6,7 +6,6 @@ import {
   Play,
   Square,
   Sparkles,
-  ChevronRight,
   Clock,
   Volume2,
 } from "lucide-react";
@@ -14,6 +13,7 @@ import {
 interface Step {
   seconds: number;
   label: string;
+  labelEn: string;
   voiceover: string;
   action: () => void;
 }
@@ -34,6 +34,7 @@ export function WalkthroughController({
     applyFix,
     setActiveEditorTab,
     guardrailIssues,
+    language,
   } = useGrantStore();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -44,6 +45,7 @@ export function WalkthroughController({
     {
       seconds: 0,
       label: "第 1 階段：重設狀態並貼上政府網址",
+      labelEn: "Step 1: Ingest Government Portal URL",
       voiceover:
         "\"When a founder applies for a government grant, they fail because of cross-doc traps and unwritten reviewer landmines. Watch GrantOS ingest a raw government portal.\"",
       action: () => {
@@ -53,6 +55,7 @@ export function WalkthroughController({
     {
       seconds: 8,
       label: "秒級爬蟲與法規 AST 編譯",
+      labelEn: "Step 2: 4-Second Crawler & AST Compiler",
       voiceover:
         "\"In 4 seconds, GrantOS crawls the official portal, downloads all 5 buried PDFs, and compiles them into a live linter AST.\"",
       action: async () => {
@@ -62,6 +65,7 @@ export function WalkthroughController({
     {
       seconds: 24,
       label: "定位審查雷區：API Wrapper 陷阱",
+      labelEn: "Step 3: Reviewer Red Flag (API Wrapper Phrasing)",
       voiceover:
         "\"In the center canvas, GrantOS flags 'OpenAI API' with a linter squiggly line. Government reviewers reject commercial APIs as 'mere adoption'.\"",
       action: () => {
@@ -75,6 +79,7 @@ export function WalkthroughController({
     {
       seconds: 40,
       label: "檢視原版 PDF 條文並一鍵重構",
+      labelEn: "Step 4: Inspect PDF Citation & 1-Click Guided Fix",
       voiceover:
         "\"Clicking the warning opens the exact government guideline. With one click, our operator reframes it into proprietary edge routing and benchmark QA.\"",
       action: () => {
@@ -85,6 +90,7 @@ export function WalkthroughController({
     {
       seconds: 55,
       label: "切換經費編列：法定會計鐵律勾稽",
+      labelEn: "Step 5: Budget Canvas (Purge Employer Insurance & Match Capital)",
       voiceover:
         "\"In the budget canvas, we caught employer insurance illegally included in R&D salary. One click purges it, keeping personnel under the 60% legal cap.\"",
       action: () => {
@@ -96,8 +102,9 @@ export function WalkthroughController({
     {
       seconds: 70,
       label: "文件庫勾稽：補正雙無欠稅證明",
+      labelEn: "Step 6: Vault Reconcile (Pass Rate jumps to 98% Audit-Ready)",
       voiceover:
-        "\"In the left evidence vault, we auto-verified the missing local tax certificate. Pre-review pass rate rockets from 26% to 98% Audit-Ready!\"",
+        "\"In the left evidence vault, we auto-verified the missing local tax certificate. Pre-review pass rate rockets from 24% to 98% Audit-Ready!\"",
       action: () => {
         setActiveEditorTab("proposal");
         applyFix("issue-missing-local-tax");
@@ -113,7 +120,6 @@ export function WalkthroughController({
       timer = setInterval(() => {
         setElapsed((prev) => {
           const next = prev + 1;
-          // Check step triggers
           const nextStep = steps.findIndex((s) => s.seconds === next);
           if (nextStep !== -1) {
             setCurrentStepIndex(nextStep);
@@ -145,18 +151,20 @@ export function WalkthroughController({
   const currentStep = steps[currentStepIndex];
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-3xl bg-zinc-950/95 border-2 border-amber-500/80 rounded-xl shadow-[0_0_30px_rgba(245,158,11,0.25)] p-4 text-xs font-mono backdrop-blur animate-slideUp">
-      <div className="flex items-center justify-between pb-2 mb-2 border-b border-zinc-800">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-3xl bg-white/98 border border-slate-300 rounded-xl shadow-2xl p-4 text-xs font-sans backdrop-blur animate-slideUp">
+      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-200">
         <div className="flex items-center space-x-2">
-          <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
-          <span className="font-bold text-zinc-100 text-sm">
-            90-Second Demo Video Director (劇本排練與自動導播)
+          <Sparkles className="w-4 h-4 text-amber-500" />
+          <span className="font-bold text-slate-900 text-sm">
+            {language === "en"
+              ? "90-Second Demo Teleprompter & Director"
+              : "90秒影片錄製導播與英文講稿提示器"}
           </span>
         </div>
 
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-1 text-zinc-300 font-bold bg-zinc-900 px-2.5 py-1 rounded border border-zinc-800">
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
+        <div className="flex items-center space-x-2.5">
+          <div className="flex items-center space-x-1.5 text-slate-700 font-bold bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200 font-mono">
+            <Clock className="w-3.5 h-3.5 text-slate-500" />
             <span>
               {Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, "0")} / 1:30
             </span>
@@ -165,50 +173,54 @@ export function WalkthroughController({
           {!isPlaying ? (
             <button
               onClick={handleStart}
-              className="flex items-center space-x-1.5 px-3 py-1 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold rounded shadow transition"
+              className="flex items-center space-x-1.5 px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-md shadow-xs transition"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
-              <span>開始播放 (Auto-Play)</span>
+              <span>{language === "en" ? "Play Sequence" : "開始播放 (Auto-Play)"}</span>
             </button>
           ) : (
             <button
               onClick={handleStop}
-              className="flex items-center space-x-1.5 px-3 py-1 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded shadow transition"
+              className="flex items-center space-x-1.5 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-md shadow-xs transition"
             >
               <Square className="w-3.5 h-3.5 fill-current" />
-              <span>暫停導播</span>
+              <span>{language === "en" ? "Pause" : "暫停導播"}</span>
             </button>
           )}
 
           <button
             onClick={onClose}
-            className="text-zinc-500 hover:text-zinc-300 text-xs px-2 py-1"
+            className="text-slate-400 hover:text-slate-700 text-xs px-2 py-1 font-medium"
           >
-            關閉
+            {language === "en" ? "Close" : "關閉"}
           </button>
         </div>
       </div>
 
       {/* Current Step Description & Subtitle Cue */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="bg-zinc-900/80 p-2.5 rounded border border-zinc-800">
-          <div className="text-[10px] text-amber-400 font-bold uppercase mb-1 flex items-center space-x-1">
-            <span>當前畫面步驟 (Step {currentStepIndex + 1}/6):</span>
+        <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+          <div className="text-[10px] text-slate-500 font-bold uppercase mb-1 flex items-center space-x-1">
+            <span>
+              {language === "en"
+                ? `Active Demo Action (${currentStepIndex + 1}/6):`
+                : `當前畫面步驟 (Step ${currentStepIndex + 1}/6):`}
+            </span>
           </div>
-          <div className="text-zinc-200 font-semibold text-xs mb-1">
-            {currentStep.label}
+          <div className="text-slate-900 font-semibold text-xs mb-1">
+            {language === "en" ? currentStep.labelEn : currentStep.label}
           </div>
-          <div className="text-zinc-500 text-[11px]">
-            觸發秒數: {currentStep.seconds}s
+          <div className="text-slate-500 text-[11px] font-mono">
+            Trigger: {currentStep.seconds}s
           </div>
         </div>
 
-        <div className="bg-zinc-900/80 p-2.5 rounded border border-zinc-800">
-          <div className="text-[10px] text-cyan-400 font-bold uppercase mb-1 flex items-center space-x-1">
-            <Volume2 className="w-3.5 h-3.5" />
-            <span>90秒英文錄影講稿提示 (Teleprompter Cue):</span>
+        <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+          <div className="text-[10px] text-slate-600 font-bold uppercase mb-1 flex items-center space-x-1">
+            <Volume2 className="w-3.5 h-3.5 text-blue-600" />
+            <span>90s Pitch Voiceover Cue (English Script):</span>
           </div>
-          <div className="text-zinc-300 italic text-[11px] leading-relaxed">
+          <div className="text-slate-700 italic text-[11px] leading-relaxed">
             {currentStep.voiceover}
           </div>
         </div>
@@ -216,4 +228,3 @@ export function WalkthroughController({
     </div>
   );
 }
-

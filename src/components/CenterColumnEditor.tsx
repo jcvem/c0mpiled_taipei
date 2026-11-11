@@ -7,9 +7,6 @@ import {
   TableProperties,
   AlertTriangle,
   CheckCircle2,
-  AlertCircle,
-  HelpCircle,
-  TrendingDown,
   Info,
 } from "lucide-react";
 
@@ -23,6 +20,7 @@ export function CenterColumnEditor() {
     selectedIssueId,
     selectIssue,
     openPdfCitation,
+    language,
   } = useGrantStore();
 
   const capitalIssue = guardrailIssues.find((i) => i.id === "issue-capital-cap");
@@ -37,63 +35,76 @@ export function CenterColumnEditor() {
   const personnelPercentage = totalBudget > 0 ? (personnelAmount / totalBudget) * 100 : 0;
 
   const isCapitalFixed = capitalIssue?.isFixed;
-  const subsidyRequested = isCapitalFixed ? 1000000 : 1500000;
   const selfFunded = isCapitalFixed ? 1000000 : 1500000;
   const paidInCapital = 1000000;
 
   return (
-    <div className="flex flex-col h-full bg-zinc-950 border-r border-zinc-800 overflow-hidden">
+    <div className="flex flex-col h-full bg-white border-r border-slate-200 overflow-hidden">
       {/* Tab Switcher Header */}
-      <div className="h-10 border-b border-zinc-800 bg-zinc-900/60 px-3 flex items-center justify-between shrink-0">
+      <div className="h-10 border-b border-slate-200 bg-slate-50/80 px-3 flex items-center justify-between shrink-0">
         <div className="flex items-center space-x-1">
           <button
             onClick={() => setActiveEditorTab("proposal")}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-mono rounded-t-md transition ${
+            className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-sans rounded-t-md transition ${
               activeEditorTab === "proposal"
-                ? "bg-zinc-950 text-zinc-100 border-t border-x border-zinc-700 font-bold"
-                : "text-zinc-400 hover:text-zinc-200"
+                ? "bg-white text-slate-900 border-t border-x border-slate-200 font-bold shadow-2xs"
+                : "text-slate-500 hover:text-slate-800"
             }`}
           >
-            <FileCode className="w-3.5 h-3.5 text-rose-400" />
-            <span>附件A_研發計畫書草稿.odt</span>
+            <FileCode className="w-3.5 h-3.5 text-rose-600" />
+            <span>
+              {language === "en"
+                ? "Appendix A: Proposal Canvas (.odt)"
+                : "附件A_研發計畫書草稿.odt"}
+            </span>
             {proposalParagraphs.some((p) => p.hasIssue) && (
-              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse ml-1" />
+              <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse ml-1" />
             )}
           </button>
 
           <button
             onClick={() => setActiveEditorTab("budget")}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-mono rounded-t-md transition ${
+            className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-sans rounded-t-md transition ${
               activeEditorTab === "budget"
-                ? "bg-zinc-950 text-zinc-100 border-t border-x border-zinc-700 font-bold"
-                : "text-zinc-400 hover:text-zinc-200"
+                ? "bg-white text-slate-900 border-t border-x border-slate-200 font-bold shadow-2xs"
+                : "text-slate-500 hover:text-slate-800"
             }`}
           >
-            <TableProperties className="w-3.5 h-3.5 text-emerald-400" />
-            <span>附件B_經費預算試算表.xlsx</span>
+            <TableProperties className="w-3.5 h-3.5 text-emerald-600" />
+            <span>
+              {language === "en"
+                ? "Appendix B: Budget Sheet (.xlsx)"
+                : "附件B_經費預算試算表.xlsx"}
+            </span>
             {budgetItems.some((b) => b.hasViolation) && (
-              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse ml-1" />
+              <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse ml-1" />
             )}
           </button>
         </div>
 
-        <div className="text-[11px] font-mono text-zinc-500 hidden sm:block">
+        <div className="text-[11px] font-sans text-slate-400 hidden sm:block">
           {activeEditorTab === "proposal"
-            ? "Live ESLint Linter Mode"
-            : "Formula & Cap Enforcement Mode"}
+            ? language === "en"
+              ? "Live ESLint Linter Mode"
+              : "即時法規語法檢核 (ESLint Mode)"
+            : language === "en"
+            ? "Statutory Cap Enforcement"
+            : "法定科目上限自動勾稽"}
         </div>
       </div>
 
       {/* Main Canvas Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/40">
         {activeEditorTab === "proposal" ? (
           /* Proposal Draft Canvas with Squiggly Underlines */
-          <div className="space-y-4 font-mono text-xs">
-            <div className="p-3 bg-zinc-900/30 rounded-lg border border-zinc-800 flex items-center justify-between text-zinc-400 text-[11px]">
+          <div className="space-y-4 font-sans text-xs">
+            <div className="p-2.5 bg-blue-50/60 rounded-md border border-blue-200/80 flex items-center justify-between text-blue-900 text-[11px]">
               <div className="flex items-center space-x-2">
-                <Info className="w-4 h-4 text-cyan-400" />
+                <Info className="w-4 h-4 text-blue-600 shrink-0" />
                 <span>
-                  紅/黃波浪底線代表命中法規退件條款或委員潛規則，點擊底線可定位護欄卡片與官方條文。
+                  {language === "en"
+                    ? "Red/amber wavy lines indicate regulatory disqualification traps or reviewer landmines. Click underlines to inspect citations."
+                    : "紅/黃波浪底線代表命中法規退件條款或委員潛規則，點擊底線可定位護欄卡片與官方條文。"}
                 </span>
               </div>
             </div>
@@ -102,47 +113,64 @@ export function CenterColumnEditor() {
               const matchedIssue = guardrailIssues.find((i) => i.id === p.issueId);
               const isSelected = p.issueId && selectedIssueId === p.issueId;
 
+              const displayTitle =
+                language === "en"
+                  ? p.sectionTitleEn
+                  : language === "zh"
+                  ? p.sectionTitle
+                  : `${p.sectionTitle} (${p.sectionTitleEn})`;
+
+              const contentText = language === "en" ? p.contentEn : p.content;
+              const targetHighlight =
+                language === "en" ? p.highlightedTextEn : p.highlightedText;
+
               return (
                 <div
                   key={p.id}
-                  className={`p-3.5 rounded-lg border transition ${
+                  className={`p-4 rounded-lg border transition shadow-2xs ${
                     p.hasIssue
                       ? isSelected
-                        ? "bg-zinc-900/90 border-rose-500/80 shadow-[0_0_15px_rgba(244,63,94,0.15)]"
-                        : "bg-zinc-900/40 border-zinc-800 hover:border-zinc-700"
-                      : "bg-zinc-950 border-zinc-800/80"
+                        ? "bg-white border-rose-400 shadow-md ring-1 ring-rose-200"
+                        : "bg-white border-slate-200 hover:border-slate-300"
+                      : "bg-white border-slate-200"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-zinc-300 text-xs">
-                      {p.sectionTitle}
+                    <span className="font-bold text-slate-800 text-xs">
+                      {displayTitle}
                     </span>
                     {p.hasIssue && matchedIssue && (
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded font-mono font-semibold ${
+                        className={`text-[10px] px-2 py-0.5 rounded font-sans font-semibold ${
                           matchedIssue.type === "HARD_TRAP"
-                            ? "bg-rose-950/80 text-rose-300 border border-rose-700/60"
-                            : "bg-amber-950/80 text-amber-300 border border-amber-700/60"
+                            ? "bg-rose-50 text-rose-700 border border-rose-200"
+                            : "bg-amber-50 text-amber-800 border border-amber-200"
                         }`}
                       >
                         {matchedIssue.type === "HARD_TRAP"
-                          ? "🛑 初審退件陷阱"
+                          ? language === "en"
+                            ? "FATAL GATE TRAP"
+                            : "🛑 初審退件陷阱"
+                          : language === "en"
+                          ? "REVIEWER RED FLAG"
                           : "⚠️ 委員潛規則雷區"}
                       </span>
                     )}
                     {!p.hasIssue && (
-                      <span className="text-[10px] text-emerald-400 flex items-center space-x-1 font-mono">
-                        <CheckCircle2 className="w-3 h-3" />
-                        <span>已通過語法檢核</span>
+                      <span className="text-[10px] text-emerald-700 flex items-center space-x-1 font-sans font-medium">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>
+                          {language === "en" ? "Audit Passed" : "已通過語法檢核"}
+                        </span>
                       </span>
                     )}
                   </div>
 
                   {/* Paragraph text rendering with interactive wavy underline */}
-                  <div className="text-zinc-300 leading-relaxed text-xs">
-                    {p.hasIssue && p.highlightedText && matchedIssue ? (
+                  <div className="text-slate-700 leading-relaxed text-xs">
+                    {p.hasIssue && targetHighlight && matchedIssue ? (
                       <div>
-                        {p.content.split(p.highlightedText)[0]}
+                        {contentText.split(targetHighlight)[0]}
                         <span
                           onClick={() => {
                             selectIssue(matchedIssue.id);
@@ -150,18 +178,22 @@ export function CenterColumnEditor() {
                           }}
                           className={`${
                             matchedIssue.type === "HARD_TRAP"
-                              ? "linter-squiggled-red text-rose-200"
-                              : "linter-squiggled-amber text-amber-200"
+                              ? "linter-squiggled-red"
+                              : "linter-squiggled-amber"
                           } font-semibold`}
-                          title="點擊檢視官方審查指標與一鍵修復"
+                          title={
+                            language === "en"
+                              ? "Click to inspect official rubric & 1-click fix"
+                              : "點擊檢視官方審查指標與一鍵修復"
+                          }
                         >
-                          {p.highlightedText}
+                          {targetHighlight}
                         </span>
-                        {p.content.split(p.highlightedText)[1]}
+                        {contentText.split(targetHighlight)[1]}
                       </div>
                     ) : (
-                      <div className="whitespace-pre-line text-zinc-300">
-                        {p.content}
+                      <div className="whitespace-pre-line text-slate-700">
+                        {contentText}
                       </div>
                     )}
                   </div>
@@ -171,75 +203,95 @@ export function CenterColumnEditor() {
           </div>
         ) : (
           /* Budget Table Canvas with statutory meters */
-          <div className="space-y-4 font-mono text-xs">
+          <div className="space-y-4 font-sans text-xs">
             {/* Statutory Guardrail Progress Meters */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {/* Personnel Cap Meter */}
               <div
-                className={`p-3 rounded-lg border transition ${
+                className={`p-3.5 rounded-lg border transition shadow-2xs ${
                   personnelPercentage > 60
-                    ? "bg-rose-950/30 border-rose-500/50"
-                    : "bg-zinc-900/60 border-zinc-800"
+                    ? "bg-rose-50/60 border-rose-300"
+                    : "bg-white border-slate-200"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-zinc-400 font-semibold text-[11px]">
-                    人事費佔總經費比重 (法定上限 ≦ 60%)
+                  <span className="text-slate-600 font-semibold text-[11px]">
+                    {language === "en"
+                      ? "Personnel % (Statutory Cap ≦ 60%)"
+                      : "人事費佔總經費比重 (法定上限 ≦ 60%)"}
                   </span>
                   <span
-                    className={`font-bold ${
+                    className={`font-bold font-mono ${
                       personnelPercentage > 60
-                        ? "text-rose-400 text-sm animate-pulse"
-                        : "text-emerald-400"
+                        ? "text-rose-700 text-sm"
+                        : "text-emerald-700"
                     }`}
                   >
                     {personnelPercentage.toFixed(1)}%
                   </span>
                 </div>
-                <div className="w-full bg-zinc-950 h-2 rounded-full overflow-hidden border border-zinc-800">
+                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
                   <div
                     className={`h-full transition-all duration-500 ${
                       personnelPercentage > 60
-                        ? "bg-rose-500"
-                        : "bg-emerald-500"
+                        ? "bg-rose-600"
+                        : "bg-emerald-600"
                     }`}
                     style={{ width: `${Math.min(100, personnelPercentage)}%` }}
                   />
                 </div>
-                <div className="mt-1 text-[10px] text-zinc-500 flex justify-between">
-                  <span>依據: 附件C會計原則 p.1</span>
+                <div className="mt-1.5 text-[10px] text-slate-500 flex justify-between font-mono">
                   <span>
-                    {personnelPercentage > 60 ? "❌ 超出法定上限" : "✅ 合規"}
+                    {language === "en"
+                      ? "Appendix C Guidelines p.1"
+                      : "依據: 附件C會計原則 p.1"}
+                  </span>
+                  <span className="font-semibold">
+                    {personnelPercentage > 60
+                      ? language === "en"
+                        ? "❌ EXCEEDS CAP"
+                        : "❌ 超出法定上限"
+                      : language === "en"
+                      ? "✅ COMPLIANT"
+                      : "✅ 合規"}
                   </span>
                 </div>
               </div>
 
               {/* Capital Cap Meter */}
               <div
-                className={`p-3 rounded-lg border transition ${
+                className={`p-3.5 rounded-lg border transition shadow-2xs ${
                   !isCapitalFixed
-                    ? "bg-rose-950/30 border-rose-500/50"
-                    : "bg-zinc-900/60 border-zinc-800"
+                    ? "bg-rose-50/60 border-rose-300"
+                    : "bg-white border-slate-200"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-zinc-400 font-semibold text-[11px]">
-                    自籌款 (NT$ {selfFunded.toLocaleString()}) vs 實收資本額
+                  <span className="text-slate-600 font-semibold text-[11px]">
+                    {language === "en"
+                      ? `Matching (NT$ ${selfFunded.toLocaleString()}) vs Capital`
+                      : `自籌款 (NT$ ${selfFunded.toLocaleString()}) vs 實收資本額`}
                   </span>
                   <span
-                    className={`font-bold ${
+                    className={`font-bold font-mono ${
                       !isCapitalFixed
-                        ? "text-rose-400 text-sm animate-pulse"
-                        : "text-emerald-400"
+                        ? "text-rose-700 text-sm"
+                        : "text-emerald-700"
                     }`}
                   >
-                    {!isCapitalFixed ? "超額 NT$ 50萬" : "符合 1:1 上限"}
+                    {!isCapitalFixed
+                      ? language === "en"
+                        ? "Exceeds NT$ 500k"
+                        : "超額 NT$ 50萬"
+                      : language === "en"
+                      ? "1:1 Match OK"
+                      : "符合 1:1 上限"}
                   </span>
                 </div>
-                <div className="w-full bg-zinc-950 h-2 rounded-full overflow-hidden border border-zinc-800">
+                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
                   <div
                     className={`h-full transition-all duration-500 ${
-                      !isCapitalFixed ? "bg-rose-500" : "bg-emerald-500"
+                      !isCapitalFixed ? "bg-rose-600" : "bg-emerald-600"
                     }`}
                     style={{
                       width: `${Math.min(
@@ -249,56 +301,78 @@ export function CenterColumnEditor() {
                     }}
                   />
                 </div>
-                <div className="mt-1 text-[10px] text-zinc-500 flex justify-between">
-                  <span>實收資本額: NT$ 1,000,000</span>
-                  <span>{!isCapitalFixed ? "❌ 自籌款超標" : "✅ 勾稽合格"}</span>
+                <div className="mt-1.5 text-[10px] text-slate-500 flex justify-between font-mono">
+                  <span>
+                    {language === "en"
+                      ? "Paid Capital: NT$ 1.0M"
+                      : "實收資本額: NT$ 1,000,000"}
+                  </span>
+                  <span className="font-semibold">
+                    {!isCapitalFixed
+                      ? language === "en"
+                        ? "❌ DISQUALIFIED"
+                        : "❌ 自籌款超標"
+                      : language === "en"
+                      ? "✅ VERIFIED"
+                      : "✅ 勾稽合格"}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Budget Line Items Table */}
-            <div className="bg-zinc-900/60 rounded-lg border border-zinc-800 overflow-hidden">
-              <div className="p-2.5 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
-                <span className="font-bold text-zinc-200">
-                  經費科目明細表 (核銷對照)
+            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-2xs">
+              <div className="p-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <span className="font-bold text-slate-800">
+                  {language === "en"
+                    ? "Reimbursement Budget Breakdown"
+                    : "經費科目明細表 (核銷對照)"}
                 </span>
-                <span className="text-[11px] text-zinc-400">
-                  總經費預算:{" "}
-                  <strong className="text-zinc-100 font-mono text-sm">
+                <span className="text-[11px] text-slate-500">
+                  {language === "en" ? "Total Budget: " : "總經費預算: "}
+                  <strong className="text-slate-900 font-mono text-sm">
                     NT$ {totalBudget.toLocaleString()}
                   </strong>
                 </span>
               </div>
 
-              <div className="divide-y divide-zinc-800 text-xs">
+              <div className="divide-y divide-slate-100 text-xs">
                 {budgetItems.map((item) => (
                   <div
                     key={item.id}
                     className={`p-3 transition ${
                       item.hasViolation
-                        ? "bg-rose-950/20 hover:bg-rose-950/30"
-                        : "hover:bg-zinc-900/40"
+                        ? "bg-rose-50/50 hover:bg-rose-50"
+                        : "hover:bg-slate-50/60"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
                       <div className="flex items-center space-x-2">
-                        <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-semibold text-[10px]">
-                          {item.category}
+                        <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold text-[10px] border border-slate-200">
+                          {language === "en" ? item.categoryEn : item.category}
                         </span>
-                        <span className="font-medium text-zinc-200">
-                          {item.name}
+                        <span className="font-medium text-slate-900">
+                          {language === "en"
+                            ? item.nameEn
+                            : language === "zh"
+                            ? item.name
+                            : `${item.name} (${item.nameEn})`}
                         </span>
                       </div>
-                      <span className="font-bold font-mono text-zinc-100 text-sm">
+                      <span className="font-bold font-mono text-slate-900 text-sm">
                         NT$ {item.amount.toLocaleString()}
                       </span>
                     </div>
 
                     {item.hasViolation && (
-                      <div className="mt-2 p-2 rounded bg-rose-950/50 border border-rose-500/40 flex items-center justify-between text-rose-300 text-[11px]">
+                      <div className="mt-2 p-2 rounded-md bg-rose-50 border border-rose-200 flex items-center justify-between text-rose-800 text-[11px]">
                         <div className="flex items-center space-x-1.5">
-                          <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
-                          <span>{item.violationMessage}</span>
+                          <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                          <span>
+                            {language === "en"
+                              ? item.violationMessageEn
+                              : item.violationMessage}
+                          </span>
                         </div>
                         {personnelIssue && (
                           <button
@@ -306,9 +380,9 @@ export function CenterColumnEditor() {
                               selectIssue(personnelIssue.id);
                               openPdfCitation(personnelIssue);
                             }}
-                            className="ml-2 text-rose-200 underline hover:text-white shrink-0 text-[10px]"
+                            className="ml-2 text-rose-700 font-medium underline hover:text-rose-900 shrink-0 text-[10px]"
                           >
-                            查看核銷原則
+                            {language === "en" ? "View Rule" : "查看核銷原則"}
                           </button>
                         )}
                       </div>
@@ -323,4 +397,3 @@ export function CenterColumnEditor() {
     </div>
   );
 }
-
