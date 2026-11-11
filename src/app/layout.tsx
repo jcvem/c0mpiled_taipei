@@ -5,6 +5,14 @@ export const metadata: Metadata = {
   title: "GrantOS // ESLint & Pre-Flight Compiler for Government Grants",
   description:
     "Zero-config government grant URL harvester and real-time guardrail IDE for Taiwan SBIR & Taipei SITI grants.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/favicon.svg" },
+    ],
+  },
 };
 
 export default function RootLayout({

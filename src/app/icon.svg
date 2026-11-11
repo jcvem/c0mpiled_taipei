@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none">
+  <defs>
+    <linearGradient id="g-grad" x1="6" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="16" y1="16" x2="27" y2="25" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Slate Squircle Background -->
+  <rect x="1" y="1" width="30" height="30" rx="7" fill="#09090b"/>
+  <rect x="1" y="1" width="30" height="30" rx="7" stroke="#27272a" stroke-width="1"/>
+
+  <!-- Architectural Geometric 'G' Monogram -->
+  <path d="M 21.5 11 C 19.8 8.8 17.1 7.5 14 7.5 C 9.86 7.5 6.5 10.86 6.5 15 C 6.5 19.14 9.86 22.5 14 22.5 C 18 22.5 21 19.8 21.4 16 L 14.5 16" 
+        stroke="url(#g-grad)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Compiler Pre-Flight Verification Mark (Emerald Checkmark) -->
+  <path d="M 18 20.5 L 21 23.5 L 26.5 17" 
+        stroke="url(#accent-grad)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
