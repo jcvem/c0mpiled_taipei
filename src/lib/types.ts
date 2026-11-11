@@ -17,6 +17,7 @@ export interface CrawledDoc {
   fileSize: string;
   summary: string;
   summaryEn: string;
+  downloadUrl?: string;
 }
 
 export type VaultDocStatus = "VERIFIED" | "WARNING" | "MISSING_CRITICAL";
@@ -42,6 +43,7 @@ export interface CompanyVaultDoc {
   notes: string;
   notesEn: string;
   requiredByCitation?: string;
+  downloadUrl?: string;
 }
 
 export type IssueType = "HARD_TRAP" | "IMPLICIT_RULE";
@@ -54,6 +56,7 @@ export interface RuleCitation {
   section: string;
   quote: string;
   quoteEn: string;
+  realDocUrl?: string;
 }
 
 export interface GuardrailIssue {
@@ -117,3 +120,4 @@ export interface GrantPortalConfig {
 }
 
 export type AppLanguage = "bilingual" | "zh" | "en";
+export type MobileActivePane = "vault" | "editor" | "copilot";

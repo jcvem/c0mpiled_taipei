@@ -11,7 +11,13 @@ import {
   Globe2,
 } from "lucide-react";
 
-export function Navbar({ onStartWalkthrough }: { onStartWalkthrough: () => void }) {
+export function Navbar({
+  onStartWalkthrough,
+  onOpenExport,
+}: {
+  onStartWalkthrough: () => void;
+  onOpenExport: () => void;
+}) {
   const {
     passProbability,
     resetAll,
@@ -98,13 +104,15 @@ export function Navbar({ onStartWalkthrough }: { onStartWalkthrough: () => void 
           </button>
         </div>
 
-        {/* Pass Probability Pill */}
-        <div
-          className={`flex items-center space-x-1.5 px-3 py-1 rounded-full border text-xs font-mono font-semibold transition-all duration-300 ${
+        {/* Pass Probability Pill - Clickable to open Export Certificate */}
+        <button
+          onClick={onOpenExport}
+          className={`flex items-center space-x-1.5 px-3 py-1 rounded-full border text-xs font-mono font-semibold transition-all duration-300 hover:scale-[1.02] ${
             isAuditReady
-              ? "bg-emerald-50 border-emerald-300 text-emerald-800 shadow-xs"
-              : "bg-rose-50 border-rose-300 text-rose-800 shadow-xs"
+              ? "bg-emerald-50 border-emerald-300 text-emerald-800 shadow-xs cursor-pointer ring-2 ring-emerald-200"
+              : "bg-rose-50 border-rose-300 text-rose-800 shadow-xs cursor-pointer"
           }`}
+          title="點擊檢視核定證明與匯出申請包 / View Audit Certificate"
         >
           {isAuditReady ? (
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
@@ -124,7 +132,16 @@ export function Navbar({ onStartWalkthrough }: { onStartWalkthrough: () => void 
               ? "AUTO-REJECT"
               : "初審退件"}
           </span>
-        </div>
+        </button>
+
+        {isAuditReady && (
+          <button
+            onClick={onOpenExport}
+            className="hidden sm:flex items-center space-x-1 px-2.5 py-1 text-xs font-sans rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-medium shadow-xs transition animate-pulse"
+          >
+            <span>{language === "en" ? "Export Package" : "匯出核定申請包"}</span>
+          </button>
+        )}
 
         {/* Demo Walkthrough Trigger */}
         <button
