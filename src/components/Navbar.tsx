@@ -160,10 +160,10 @@ export function Navbar({
         <button
           onClick={onStartWalkthrough}
           className="flex items-center space-x-1.5 px-2.5 py-1 text-xs font-sans rounded-md bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-xs transition"
-          title="Play 90-second Demo Sequence"
+          title="Play 60-second Demo Sequence"
         >
           <Sparkles className="w-3 h-3 text-amber-300" />
-          <span className="hidden md:inline">90s Demo Autoplay</span>
+          <span className="hidden md:inline">60s Demo Autoplay</span>
           <span className="md:hidden">Demo</span>
         </button>
 

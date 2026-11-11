@@ -34,7 +34,7 @@ export default function Home() {
           }}
         />
 
-        {/* 90-Second Demo Video Director / Teleprompter */}
+        {/* 60-Second Demo Video Director / Teleprompter */}
         <WalkthroughController
           isOpen={isWalkthroughOpen}
           onClose={() => setIsWalkthroughOpen(false)}
@@ -142,7 +142,7 @@ export default function Home() {
         onClose={() => setIsExportOpen(false)}
       />
 
-      {/* 90-Second Demo Video Director / Teleprompter */}
+      {/* 60-Second Demo Video Director / Teleprompter */}
       <WalkthroughController
         isOpen={isWalkthroughOpen}
         onClose={() => setIsWalkthroughOpen(false)}

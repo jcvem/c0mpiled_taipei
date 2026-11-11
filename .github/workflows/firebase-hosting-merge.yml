@@ -19,6 +19,8 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_C0MPILED_TAIPEI }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_C0MPILED_TAIPEI || secrets.FIREBASE_SERVICE_ACCOUNT }}
           channelId: live
           projectId: c0mpiled-taipei
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks

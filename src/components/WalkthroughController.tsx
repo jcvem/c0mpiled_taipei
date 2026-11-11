@@ -47,27 +47,27 @@ export function WalkthroughController({
       label: "第 1 階段：重設狀態並貼上政府網址",
       labelEn: "Step 1: Ingest Government Portal URL",
       voiceover:
-        "\"When a founder applies for a government grant, they fail because of cross-doc traps and unwritten reviewer landmines. Watch GrantOS ingest a raw government portal.\"",
+        "\"When founders apply for grants, they fail on cross-doc traps and unwritten reviewer landmines. Watch GrantOS ingest a raw government portal.\"",
       action: () => {
         resetAll();
       },
     },
     {
-      seconds: 8,
-      label: "秒級爬蟲與法規 AST 編譯",
+      seconds: 6,
+      label: "第 2 階段：秒級爬蟲與法規 AST 編譯",
       labelEn: "Step 2: 4-Second Crawler & AST Compiler",
       voiceover:
-        "\"In 4 seconds, GrantOS crawls the official portal, downloads all 5 buried PDFs, and compiles them into a live linter AST.\"",
+        "\"In 4 seconds, GrantOS crawls the official portal, ingests buried PDFs, and compiles them into a live linter AST.\"",
       action: async () => {
         await runHarvester();
       },
     },
     {
-      seconds: 24,
-      label: "定位審查雷區：API Wrapper 陷阱",
+      seconds: 16,
+      label: "第 3 階段：定位審查雷區：API Wrapper 陷阱",
       labelEn: "Step 3: Reviewer Red Flag (API Wrapper Phrasing)",
       voiceover:
-        "\"In the center canvas, GrantOS flags 'OpenAI API' with a linter squiggly line. Government reviewers reject commercial APIs as 'mere adoption'.\"",
+        "\"GrantOS flags 'OpenAI API' with a squiggly line. Reviewers auto-reject commercial API wrappers as mere adoption.\"",
       action: () => {
         const issue = guardrailIssues.find((i) => i.id === "issue-api-wrapper");
         if (issue) {
@@ -77,22 +77,22 @@ export function WalkthroughController({
       },
     },
     {
-      seconds: 40,
-      label: "檢視原版 PDF 條文並一鍵重構",
+      seconds: 28,
+      label: "第 4 階段：檢視原版 PDF 條文並一鍵重構",
       labelEn: "Step 4: Inspect PDF Citation & 1-Click Guided Fix",
       voiceover:
-        "\"Clicking the warning opens the exact government guideline. With one click, our operator reframes it into proprietary edge routing and benchmark QA.\"",
+        "\"Clicking the warning cites the exact clause. One click reframes it into proprietary edge routing and benchmark QA.\"",
       action: () => {
         closePdfCitation();
         applyFix("issue-api-wrapper");
       },
     },
     {
-      seconds: 55,
-      label: "切換經費編列：法定會計鐵律勾稽",
+      seconds: 40,
+      label: "第 5 階段：切換經費編列：法定會計鐵律勾稽",
       labelEn: "Step 5: Budget Canvas (Purge Employer Insurance & Match Capital)",
       voiceover:
-        "\"In the budget canvas, we caught employer insurance illegally included in R&D salary. One click purges it, keeping personnel under the 60% legal cap.\"",
+        "\"In the budget canvas, we caught employer insurance illegally lumped into salary. One click purges it, staying under the 60% legal cap.\"",
       action: () => {
         setActiveEditorTab("budget");
         applyFix("issue-personnel-insurance");
@@ -100,11 +100,11 @@ export function WalkthroughController({
       },
     },
     {
-      seconds: 70,
-      label: "文件庫勾稽：補正雙無欠稅證明",
+      seconds: 50,
+      label: "第 6 階段：文件庫勾稽：補正雙無欠稅證明，達成 98% Audit-Ready",
       labelEn: "Step 6: Vault Reconcile (Pass Rate jumps to 98% Audit-Ready)",
       voiceover:
-        "\"In the left evidence vault, we auto-verified the missing local tax certificate. Pre-review pass rate rockets from 24% to 98% Audit-Ready!\"",
+        "\"We auto-reconcile the missing local tax certificate. Audit-ready rate rockets from 24% to 98%, unlocking Cover Sheet 0!\"",
       action: () => {
         setActiveEditorTab("proposal");
         applyFix("issue-missing-local-tax");
@@ -125,7 +125,7 @@ export function WalkthroughController({
             setCurrentStepIndex(nextStep);
             steps[nextStep].action();
           }
-          if (next >= 85) {
+          if (next >= 60) {
             setIsPlaying(false);
           }
           return next;
@@ -157,8 +157,8 @@ export function WalkthroughController({
           <Sparkles className="w-4 h-4 text-amber-500" />
           <span className="font-bold text-slate-900 text-sm">
             {language === "en"
-              ? "90-Second Demo Teleprompter & Director"
-              : "90秒影片錄製導播與英文講稿提示器"}
+              ? "60-Second Demo Teleprompter & Director"
+              : "60秒影片錄製導播與英文講稿提示器"}
           </span>
         </div>
 
@@ -166,7 +166,7 @@ export function WalkthroughController({
           <div className="flex items-center space-x-1.5 text-slate-700 font-bold bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200 font-mono">
             <Clock className="w-3.5 h-3.5 text-slate-500" />
             <span>
-              {Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, "0")} / 1:30
+              {Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, "0")} / 1:00
             </span>
           </div>
 
@@ -218,7 +218,7 @@ export function WalkthroughController({
         <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
           <div className="text-[10px] text-slate-600 font-bold uppercase mb-1 flex items-center space-x-1">
             <Volume2 className="w-3.5 h-3.5 text-blue-600" />
-            <span>90s Pitch Voiceover Cue (English Script):</span>
+            <span>60s Pitch Voiceover Cue (English Script):</span>
           </div>
           <div className="text-slate-700 italic text-[11px] leading-relaxed">
             {currentStep.voiceover}

@@ -14,6 +14,7 @@ import {
   INITIAL_PROPOSAL_PARAGRAPHS,
   INITIAL_BUDGET_ITEMS,
 } from "./grant-data";
+import { playChime } from "./sound";
 
 interface GrantStore {
   // Language & Theme state
@@ -267,6 +268,8 @@ export const useGrantStore = create<GrantStore>((set, get) => ({
     const newImplicit = updatedIssues.filter(
       (i) => !i.isFixed && i.type === "IMPLICIT_RULE"
     ).length;
+
+    playChime(newScore >= 95 ? "success" : "fix");
 
     set({
       guardrailIssues: updatedIssues,
